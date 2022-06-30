@@ -1,0 +1,229 @@
+﻿@model List<Rp3.Test.Mvc.Models.TransactionViewModel>
+@{
+    ViewBag.Title = "Home Page";
+}
+<div class="jumbotron">
+    <h1>Mis Transacciones</h1>
+    <p class="lead">Registro de Ingresos y Gastos</p>
+    <a class="btn btn-default" href="#" onclick=AbrirModal("0")>Nuevo</a>
+</div>
+
+<div class="row">
+    <table style="width:100%">
+        <thead>
+            <tr>
+                <th></th>
+                <th>ID</th>
+                <th>Fecha</th>
+                <th>Categoría</th>
+                <th>Tipo</th>
+                <th>Descripción</th>
+                <th>Valor</th>
+                <th>Notes</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td><a class="btn btn-primary" href="#" onclick=AbrirModal('@item.TransactionId')>Editar</a></td>
+                    <td>
+                        @item.TransactionId
+                    </td>
+                    <td>
+                        @string.Format("{0:dd/MMM/yyyy}", item.RegisterDate)
+                    </td>
+                    <td>
+                        @item.CategoryName
+                    </td>
+                    <td>
+                        @item.TransactionType
+                    </td>
+                    <td>
+                        @item.ShortDescription
+                    </td>
+                    <td>
+                        @string.Format("{0:c2}", item.Amount)
+                    </td>
+                    <td>
+                        @item.Notes
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="modal" tabindex="-1" role="dialog" id="modalEdit">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Modal title</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form class="container">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Id Transaccion</label>
+                            <div class="col-md-6">
+                                <div class="form-group mx-sm-3 mb-12">
+                                    <input type="text" class="form-control" id="transactionId" placeholder="transactionId">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Transaccion</label>
+                            <select id="transactionTypeId" class="col-md-6 form-control" aria-label=".form-select-lg example">
+                                @foreach (var item in Model.GroupBy(x => x.TransactionTypeId).Select(y => y.First()))
+                                {
+                                    <option value="@item.TransactionTypeId">@item.TransactionType</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Categoria</label>
+                            <select id="categoryId" class="col-md-6 form-control" aria-label=".form-select-sm example">
+                                <option selected>Categoria</option>
+                                @foreach (var item in Model.GroupBy(x => x.CategoryId).Select(y => y.First()))
+                                {
+                                    <option value="@item.CategoryId">@item.CategoryName</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Fecha Transaccion</label>
+                            <div class='col-md-6 input-group date datepicker' id='registerDate'>
+                                <input type='text' ID="txt_DateIssued" class="form-control"></input>
+                                <span class="input-group-addon">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">ShortDescription</label>
+                            <div class="col-md-6">
+                                <div class="form-group mx-sm-3 mb-12">
+                                    <input type="text" class="form-control" id="shortDescription" placeholder="ShortDescription">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">Amount</label>
+                            <div class="col-md-6">
+                                <div class="form-group mx-sm-3 mb-12">
+                                    <input type="number" class="form-control" id="amount" placeholder="Amount">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">notes</label>
+                            <div class="col-md-6">
+                                <div class="form-group mx-sm-3 mb-12">
+                                    <textarea class="form-control" rows="2" id="notes" placeholder="notes"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="Guardar()">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        $('.datepicker').datepicker({
+            autoclose: true,
+            format: "dd/mm/yyyy",
+        })
+        var $datepicker = $('#registerDate');
+        $datepicker.datepicker();
+        //$datepicker.datepicker('setDate', new Date());
+        function AbrirModal(id) {
+            let input = document.querySelector("#transactionId");
+            input.disabled = true;
+            if (id != 0) {
+                var data = {
+                    transactionId: id
+                };
+                $('#transactionId').show(); //muestro mediante id
+                jQuery.ajax({
+                    url: "@Url.Action("GetTransactionId", "Transaction")",
+                    type: "GET",
+                    data: data,
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        if (data != null) {
+                            $("#transactionId").val(data[0].TransactionId);
+                            selectElement('categoryId', data[0].CategoryId);
+                            selectElement('transactionTypeId', data[0].TransactionTypeId);
+                            $("#shortDescription").val(data[0].ShortDescription);
+                            $("#amount").val(data[0].Amount);
+                            $("#notes").val(data[0].Notes);
+                            console.log(parseDate(data[0].RegisterDate));
+                            $datepicker.datepicker('setDate', parseDate(data[0].RegisterDate));
+                        }
+                    }
+                });
+            } else {
+                $("#transactionId").val(0);
+                selectElement('categoryId', "");
+                selectElement('transactionTypeId', "");
+                $("#shortDescription").val("");
+                $("#amount").val("");
+                $("#notes").val("");
+                $datepicker.datepicker('setDate', new Date());
+            }
+            $("#modalEdit").modal("show");
+        };
+        function parseDate(date) {
+            return formatDate(new Date(parseInt(/-?\d+/.exec(date)[0])))
+        }
+        function formatDate(date) {
+            return [
+                date.getDate(),
+                date.getMonth() + 1,
+                date.getFullYear(),
+            ].join('/');
+        }
+        function Guardar() {
+            let transaction = {
+                TransactionId: $("#transactionId").val(),
+                TransactionTypeId: document.getElementById("transactionTypeId").value,
+                CategoryId: document.getElementById("categoryId").value,
+                PersonId: @ViewBag.personId,
+                RegisterDate: $("#registerDate").datepicker('getDate'),
+                Amount: $("#amount").val(),
+                ShortDescription: $("#shortDescription").val(),
+                Notes: $("#notes").val(),
+            };
+            jQuery.ajax({
+                url: "@Url.Action("Transaction", "Transaction")",
+                type: "POST",
+                data: JSON.stringify(transaction),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    if (data.Result) {
+                        alert(data.Message);
+                        $("#modalEdit").modal("hide");
+                         window.location.href = "@Url.Action("Index", "Transaction")";
+                    } else {
+                        alert(data.Message);
+                    }
+                },
+                error: function (error) {
+                    alert(error);
+                }
+            });
+        }
+        function selectElement(id, valueToSelect) {
+            let element = document.getElementById(id);
+            element.value = valueToSelect;
+        }
+    </script>
+}

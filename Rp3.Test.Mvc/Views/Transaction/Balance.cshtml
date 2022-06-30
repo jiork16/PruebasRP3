@@ -1,0 +1,46 @@
+﻿@model List<Rp3.Test.Mvc.Models.TransactionViewModel>
+@{
+    ViewBag.Title = "Balance";
+}
+
+<div class="jumbotron">
+    <h1>Balance</h1>
+    <p class="lead">Resumen por Categoría</p>
+</div>
+<table style="width:100%" class="table-bordered">
+    <thead>
+        <tr>
+            <th>Categoría</th>
+            <th>Saldo </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var report in @ViewBag.report)
+        {
+            <tr>
+                <td>
+                    @report.Name
+                </td>
+                <td>
+                    @report.Amount.ToString("C2", new System.Globalization.CultureInfo("en-US"))
+                </td>
+            </tr>
+
+        }
+        <tr>
+            <th scope="row">Total</th>
+            <td colspan="2">@ViewBag.totalReport.ToString("C2", new System.Globalization.CultureInfo("en-US"))</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+        function unmaskDinero(dinero) {
+            return Number(dinero.replace(/[^0-9\.]+/g, ""));
+        }
+        });
+    </script>
+}
+

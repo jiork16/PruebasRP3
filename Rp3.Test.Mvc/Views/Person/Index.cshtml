@@ -1,0 +1,62 @@
+﻿@model Rp3.Test.Common.Models.PersonLogin
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>Login</h3>
+<div class="back">
+    <div class="div-center">
+        <div class="content">
+            <hr />
+            <form>
+                <div class="form-group">
+                    <label for="usuario">Usuario</label>
+                    <input type="text" class="form-control" id="userName" placeholder="Usuario">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" placeholder="Password">
+                </div>
+                <input type="submit"  id="login" class="btn btn-primary">
+                <hr />
+            </form>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+
+        $("#login").on('click', function (e) {
+            e.preventDefault();
+            let personLogin = {
+                Username: $("#userName").val(),
+                Password: $("#password").val(),
+                Id: 0,
+                Name: null
+            };
+            jQuery.ajax({
+                url: "@Url.Action("Login", "Person")",
+                type: "POST",
+                data: JSON.stringify(personLogin),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    //console.log(data);
+                    if (data.Result) {
+                        alert(data.Message);
+                        window.location.href = "@Url.Action("Index", "Home")";
+                    } else {
+                        alert(data.Message);
+                    }
+                },
+                error: function (error) {
+                    alert(error);
+                }
+            });
+        });
+        });
+    </script>
+}

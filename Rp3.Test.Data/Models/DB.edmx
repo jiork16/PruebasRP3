@@ -1,0 +1,290 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Rp3TestModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="tbCategory">
+          <Key>
+            <PropertyRef Name="CategoryId" />
+          </Key>
+          <Property Name="CategoryId" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Active" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbPerson">
+          <Key>
+            <PropertyRef Name="PersonId" />
+          </Key>
+          <Property Name="PersonId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserName" Type="varchar" MaxLength="25" />
+          <Property Name="Name" Type="varchar" MaxLength="25" />
+          <Property Name="Password" Type="varchar" MaxLength="25" />
+        </EntityType>
+        <EntityType Name="tbTransaction">
+          <Key>
+            <PropertyRef Name="TransactionId" />
+          </Key>
+          <Property Name="TransactionId" Type="int" Nullable="false" />
+          <Property Name="TransactionTypeId" Type="smallint" Nullable="false" />
+          <Property Name="CategoryId" Type="int" Nullable="false" />
+          <Property Name="PersonId" Type="int" Nullable="false" />
+          <Property Name="RegisterDate" Type="datetime" Nullable="false" />
+          <Property Name="ShortDescription" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Amount" Type="numeric" Precision="18" Scale="6" Nullable="false" />
+          <Property Name="Notes" Type="varchar(max)" />
+          <Property Name="DateUpdate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="tbTransactionType">
+          <Key>
+            <PropertyRef Name="TransactionTypeId" />
+          </Key>
+          <Property Name="TransactionTypeId" Type="smallint" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_tbTransaction_tbCategory">
+          <End Role="tbCategory" Type="Self.tbCategory" Multiplicity="1" />
+          <End Role="tbTransaction" Type="Self.tbTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbCategory">
+              <PropertyRef Name="CategoryId" />
+            </Principal>
+            <Dependent Role="tbTransaction">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbTransaction_tbPerson">
+          <End Role="tbPerson" Type="Self.tbPerson" Multiplicity="1" />
+          <End Role="tbTransaction" Type="Self.tbTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbPerson">
+              <PropertyRef Name="PersonId" />
+            </Principal>
+            <Dependent Role="tbTransaction">
+              <PropertyRef Name="PersonId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbTransaction_tbTransactionType">
+          <End Role="tbTransactionType" Type="Self.tbTransactionType" Multiplicity="1" />
+          <End Role="tbTransaction" Type="Self.tbTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbTransactionType">
+              <PropertyRef Name="TransactionTypeId" />
+            </Principal>
+            <Dependent Role="tbTransaction">
+              <PropertyRef Name="TransactionTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="FillRandomData" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="spTransactionInsert" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="infoXml" Type="xml" Mode="In" />
+        </Function>
+        <Function Name="spTransactionUpdate" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="infoXml" Type="xml" Mode="In" />
+        </Function>
+        <EntityContainer Name="Rp3TestModelStoreContainer">
+          <EntitySet Name="tbCategory" EntityType="Self.tbCategory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbPerson" EntityType="Self.tbPerson" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbTransaction" EntityType="Self.tbTransaction" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbTransactionType" EntityType="Self.tbTransactionType" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_tbTransaction_tbCategory" Association="Self.FK_tbTransaction_tbCategory">
+            <End Role="tbCategory" EntitySet="tbCategory" />
+            <End Role="tbTransaction" EntitySet="tbTransaction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbTransaction_tbPerson" Association="Self.FK_tbTransaction_tbPerson">
+            <End Role="tbPerson" EntitySet="tbPerson" />
+            <End Role="tbTransaction" EntitySet="tbTransaction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbTransaction_tbTransactionType" Association="Self.FK_tbTransaction_tbTransactionType">
+            <End Role="tbTransactionType" EntitySet="tbTransactionType" />
+            <End Role="tbTransaction" EntitySet="tbTransaction" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Rp3TestModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="tbCategory">
+          <Key>
+            <PropertyRef Name="CategoryId" />
+          </Key>
+          <Property Name="CategoryId" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Active" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tbTransaction" Relationship="Self.FK_tbTransaction_tbCategory" FromRole="tbCategory" ToRole="tbTransaction" />
+        </EntityType>
+        <EntityType Name="tbTransaction">
+          <Key>
+            <PropertyRef Name="TransactionId" />
+          </Key>
+          <Property Name="TransactionId" Type="Int32" Nullable="false" />
+          <Property Name="TransactionTypeId" Type="Int16" Nullable="false" />
+          <Property Name="CategoryId" Type="Int32" Nullable="false" />
+          <Property Name="RegisterDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ShortDescription" Type="String" MaxLength="100" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Amount" Type="Decimal" Precision="18" Scale="6" Nullable="false" />
+          <Property Name="Notes" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="DateUpdate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="tbCategory" Relationship="Self.FK_tbTransaction_tbCategory" FromRole="tbTransaction" ToRole="tbCategory" />
+          <NavigationProperty Name="tbTransactionType" Relationship="Self.FK_tbTransaction_tbTransactionType" FromRole="tbTransaction" ToRole="tbTransactionType" />
+          <Property Name="PersonId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tbPerson" Relationship="Rp3TestModel.FK_tbTransaction_tbPerson" FromRole="tbTransaction" ToRole="tbPerson" />
+        </EntityType>
+        <EntityType Name="tbTransactionType">
+          <Key>
+            <PropertyRef Name="TransactionTypeId" />
+          </Key>
+          <Property Name="TransactionTypeId" Type="Int16" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="tbTransaction" Relationship="Self.FK_tbTransaction_tbTransactionType" FromRole="tbTransactionType" ToRole="tbTransaction" />
+        </EntityType>
+        <Association Name="FK_tbTransaction_tbCategory">
+          <End Role="tbCategory" Type="Self.tbCategory" Multiplicity="1" />
+          <End Role="tbTransaction" Type="Self.tbTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbCategory">
+              <PropertyRef Name="CategoryId" />
+            </Principal>
+            <Dependent Role="tbTransaction">
+              <PropertyRef Name="CategoryId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbTransaction_tbTransactionType">
+          <End Role="tbTransactionType" Type="Self.tbTransactionType" Multiplicity="1" />
+          <End Role="tbTransaction" Type="Self.tbTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbTransactionType">
+              <PropertyRef Name="TransactionTypeId" />
+            </Principal>
+            <Dependent Role="tbTransaction">
+              <PropertyRef Name="TransactionTypeId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Rp3TestEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="tbCategory" EntityType="Self.tbCategory" />
+          <EntitySet Name="tbTransaction" EntityType="Self.tbTransaction" />
+          <EntitySet Name="tbTransactionType" EntityType="Self.tbTransactionType" />
+          <AssociationSet Name="FK_tbTransaction_tbCategory" Association="Self.FK_tbTransaction_tbCategory">
+            <End Role="tbCategory" EntitySet="tbCategory" />
+            <End Role="tbTransaction" EntitySet="tbTransaction" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbTransaction_tbTransactionType" Association="Self.FK_tbTransaction_tbTransactionType">
+            <End Role="tbTransactionType" EntitySet="tbTransactionType" />
+            <End Role="tbTransaction" EntitySet="tbTransaction" />
+          </AssociationSet>
+          <FunctionImport Name="FillRandomData" />
+          <FunctionImport Name="spTransactionInsert">
+          <Parameter Name="infoXml" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="spTransactionUpdate">
+          <Parameter Name="infoXml" Mode="In" Type="String" />
+          </FunctionImport>
+          <EntitySet Name="tbPerson" EntityType="Rp3TestModel.tbPerson" />
+          <AssociationSet Name="FK_tbTransaction_tbPerson" Association="Rp3TestModel.FK_tbTransaction_tbPerson">
+            <End Role="tbPerson" EntitySet="tbPerson" />
+            <End Role="tbTransaction" EntitySet="tbTransaction" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="tbPerson">
+          <Key>
+            <PropertyRef Name="PersonId" />
+          </Key>
+          <Property Name="PersonId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserName" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Name" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <Property Name="Password" Type="String" MaxLength="25" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="tbTransaction" Relationship="Rp3TestModel.FK_tbTransaction_tbPerson" FromRole="tbPerson" ToRole="tbTransaction" />
+        </EntityType>
+        <Association Name="FK_tbTransaction_tbPerson">
+          <End Type="Rp3TestModel.tbPerson" Role="tbPerson" Multiplicity="1" />
+          <End Type="Rp3TestModel.tbTransaction" Role="tbTransaction" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbPerson">
+              <PropertyRef Name="PersonId" />
+            </Principal>
+            <Dependent Role="tbTransaction">
+              <PropertyRef Name="PersonId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Rp3TestModelStoreContainer" CdmEntityContainer="Rp3TestEntities">
+          <EntitySetMapping Name="tbCategory">
+            <EntityTypeMapping TypeName="Rp3TestModel.tbCategory">
+              <MappingFragment StoreEntitySet="tbCategory">
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Active" ColumnName="Active" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbTransaction">
+            <EntityTypeMapping TypeName="Rp3TestModel.tbTransaction">
+              <MappingFragment StoreEntitySet="tbTransaction">
+                <ScalarProperty Name="PersonId" ColumnName="PersonId" />
+                <ScalarProperty Name="TransactionId" ColumnName="TransactionId" />
+                <ScalarProperty Name="TransactionTypeId" ColumnName="TransactionTypeId" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="RegisterDate" ColumnName="RegisterDate" />
+                <ScalarProperty Name="ShortDescription" ColumnName="ShortDescription" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="DateUpdate" ColumnName="DateUpdate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbTransactionType">
+            <EntityTypeMapping TypeName="Rp3TestModel.tbTransactionType">
+              <MappingFragment StoreEntitySet="tbTransactionType">
+                <ScalarProperty Name="TransactionTypeId" ColumnName="TransactionTypeId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="FillRandomData" FunctionName="Rp3TestModel.Store.FillRandomData" />
+          <FunctionImportMapping FunctionImportName="spTransactionInsert" FunctionName="Rp3TestModel.Store.spTransactionInsert" />
+          <FunctionImportMapping FunctionImportName="spTransactionUpdate" FunctionName="Rp3TestModel.Store.spTransactionUpdate" />
+          <EntitySetMapping Name="tbPerson">
+            <EntityTypeMapping TypeName="Rp3TestModel.tbPerson">
+              <MappingFragment StoreEntitySet="tbPerson">
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="PersonId" ColumnName="PersonId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Ninguno" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
